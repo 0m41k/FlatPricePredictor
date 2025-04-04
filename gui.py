@@ -11,7 +11,7 @@ class PricePredictionApp(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle("Предсказание цены покупки жилья")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 400, 400)
 
         # Создаем виджеты
         layout = QVBoxLayout()
@@ -38,6 +38,16 @@ class PricePredictionApp(QMainWindow):
         self.floor_label = QLabel("Этаж:")
         self.floor_input = QLineEdit()
 
+        # Ремонт (выпадающий список: Нет - 2, Есть - 1)
+        self.repair_label = QLabel("Ремонт:")
+        self.repair_input = QComboBox()
+        self.repair_input.addItems(["Нет", "Есть"])
+
+        # Мебель (выпадающий список: Нет - 2, Есть - 1)
+        self.furniture_label = QLabel("Мебель:")
+        self.furniture_input = QComboBox()
+        self.furniture_input.addItems(["Нет", "Есть"])
+
         # Кнопка предсказания
         self.predict_button = QPushButton("Предсказать")
         self.predict_button.clicked.connect(self.predict_price)
@@ -53,6 +63,10 @@ class PricePredictionApp(QMainWindow):
         layout.addWidget(self.house_type_input)
         layout.addWidget(self.floor_label)
         layout.addWidget(self.floor_input)
+        layout.addWidget(self.repair_label)
+        layout.addWidget(self.repair_input)
+        layout.addWidget(self.furniture_label)
+        layout.addWidget(self.furniture_input)
         layout.addWidget(self.predict_button)
 
         container = QWidget()
@@ -68,19 +82,28 @@ class PricePredictionApp(QMainWindow):
             house_type = self.house_type_input.currentText()
             floor = int(self.floor_input.text())
 
+            # Получаем значения для ремонта и мебели
+            repair = 1 if self.repair_input.currentText() == "Есть" else 2
+            furniture = 1 if self.furniture_input.currentText() == "Есть" else 2
+
             # Создаем DataFrame из введенных данных
             input_data = pd.DataFrame({
                 'Район': [district],
                 'Количество комнат': [rooms],
                 'Площадь': [area],
                 'Тип дома': [house_type],
-                'Этаж': [floor]
+                'Этаж': [floor],
+                'Ремонт': [repair],
+                'Мебель': [furniture]
             })
 
             # Получаем предсказание
             prediction = self.model.predict(input_data)[0]
 
+            # Форматируем предсказанную цену
+            formatted_prediction = f"{prediction:,.2f}"
+
             # Выводим результат в диалоговом окне
-            QMessageBox.information(self, "Результат", f"Предсказанная цена покупки: {prediction:.2f} рублей")
+            QMessageBox.information(self, "Результат", f"Предсказанная цена покупки: {formatted_prediction} рублей")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка: {str(e)}")

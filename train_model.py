@@ -11,11 +11,15 @@ def train():
     # Загрузка предобработанных данных
     X_train = pd.read_csv(f"{SORTED_DATA_DIR}X_train.csv")
     y_train = pd.read_csv(f"{SORTED_DATA_DIR}y_train.csv").values.ravel()
-    
-    # Создание преобразователя для числовых и категориальных признаков
-    numeric_features = ['Количество комнат', 'Площадь', 'Этаж']
-    categorical_features = ['Район', 'Тип дома']
 
+    # Отладочная информация
+    print("Столбцы в X_train:", X_train.columns)
+
+    # Разделение данных на числовые и категориальные признаки
+    numeric_features = ['Количество комнат', 'Площадь', 'Этаж', 'Ремонт', 'Мебель']
+    categorical_features = ['Район', 'Тип дома' ]
+
+    # Создание преобразователя
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', StandardScaler(), numeric_features),
@@ -32,4 +36,4 @@ def train():
     model.fit(X_train, y_train)
 
     print("Модель успешно обучена.")
-    return model, preprocessor  # Возвращаем модель и preprocessor
+    return model, preprocessor

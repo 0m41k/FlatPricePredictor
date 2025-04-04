@@ -1,5 +1,5 @@
-import pandas as pd
 import os
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -11,30 +11,19 @@ def preprocess_and_sort_data():
     print("=== Предобработка и сортировка данных ===")
 
     # Создание директории, если она не существует
-    try:
-        os.makedirs(SORTED_DATA_DIR, exist_ok=True)
-        print(f"Директория '{SORTED_DATA_DIR}' успешно создана.")
-    except Exception as e:
-        print(f"Ошибка при создании директории: {e}")
-        return
+    os.makedirs(SORTED_DATA_DIR, exist_ok=True)
 
     # Чтение данных
-    try:
-        data = pd.read_csv(DATA_PATH)
-        print(f"Данные успешно загружены из файла '{DATA_PATH}'.")
-    except Exception as e:
-        print(f"Ошибка при чтении файла '{DATA_PATH}': {e}")
-        return
+    data = pd.read_csv(DATA_PATH)
 
     # Проверка наличия всех нужных столбцов
-    required_columns = ['Район', 'Количество комнат', 'Площадь', 'Тип дома', 'Этаж', 'Цена покупки']
+    required_columns = ['Район', 'Количество комнат', 'Площадь', 'Тип дома', 'Этаж', 'Ремонт', 'Мебель', 'Цена покупки']
     missing_columns = [col for col in required_columns if col not in data.columns]
     if missing_columns:
-        print(f"В данных отсутствуют следующие столбцы: {missing_columns}")
-        return
+        raise ValueError(f"В данных отсутствуют следующие столбцы: {missing_columns}")
 
     # Разделение данных на числовые и категориальные признаки
-    numeric_features = ['Количество комнат', 'Площадь', 'Этаж']
+    numeric_features = ['Количество комнат', 'Площадь', 'Этаж', 'Ремонт', 'Мебель']
     categorical_features = ['Район', 'Тип дома']
 
     # Создание преобразователя
@@ -48,20 +37,17 @@ def preprocess_and_sort_data():
     X = data.drop('Цена покупки', axis=1)
     y = data['Цена покупки']
 
-    # Разделение данных на обучающую и тестовую выборки (80% - обучение, 20% - тест)
-    try:
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        print("Данные успешно разделены на обучающую и тестовую выборки.")
-    except Exception as e:
-        print(f"Ошибка при разделении данных: {e}")
-        return
+    # Разделение данных на обучающую и тестовую выборки (95% - обучение, 5% - тест)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05, random_state=42)
+
+    # Отладочная информация
+    print("Столбцы в X_train:", X_train.columns)
+    print("Столбцы в X_test:", X_test.columns)
 
     # Сохранение обработанных данных
-    try:
-        X_train.to_csv(f"{SORTED_DATA_DIR}X_train.csv", index=False)
-        X_test.to_csv(f"{SORTED_DATA_DIR}X_test.csv", index=False)
-        y_train.to_csv(f"{SORTED_DATA_DIR}y_train.csv", index=False)
-        y_test.to_csv(f"{SORTED_DATA_DIR}y_test.csv", index=False)
-        print("Обработанные данные успешно сохранены.")
-    except Exception as e:
-        print(f"Ошибка при сохранении данных: {e}")
+    X_train.to_csv(f"{SORTED_DATA_DIR}X_train.csv", index=False)
+    X_test.to_csv(f"{SORTED_DATA_DIR}X_test.csv", index=False)
+    y_train.to_csv(f"{SORTED_DATA_DIR}y_train.csv", index=False)
+    y_test.to_csv(f"{SORTED_DATA_DIR}y_test.csv", index=False)
+
+    print("Данные успешно предобработаны и сохранены.")
