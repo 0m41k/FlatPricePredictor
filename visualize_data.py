@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
 from data_preprocessing import DATA_PATH
 
 def visualize():
@@ -22,11 +23,14 @@ def visualize():
     axes[0, 0].set_title("Доля квартир по районам")
     axes[0, 0].axis('equal')  # Круговая диаграмма будет кругом, а не эллипсом
 
-    # График 2: Зависимость цены от площади
+    # График 2: Зависимость цены от площади с линией тренда
     sns.scatterplot(x='Площадь', y='Цена покупки', data=data, ax=axes[0, 1], color='orange')
+
+    # Настройка графика
     axes[0, 1].set_title("Зависимость цены от площади")
     axes[0, 1].set_xlabel("Площадь (кв.м)")
     axes[0, 1].set_ylabel("Цена покупки")
+    axes[0, 1].legend()
 
     # График 3: Зависимость цены от количества комнат
     sns.boxplot(x='Количество комнат', y='Цена покупки', data=data, ax=axes[1, 0], palette='Set2')
