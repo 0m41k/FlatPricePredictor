@@ -17,7 +17,7 @@ def preprocess_and_sort_data():
     data = pd.read_csv(DATA_PATH)
 
     # Проверка наличия всех нужных столбцов
-    required_columns = ['Район', 'Количество комнат', 'Площадь', 'Тип дома', 'Этаж', 'Ремонт', 'Мебель', 'Цена покупки']
+    required_columns = ['Район', 'Количество комнат', 'Площадь', 'Тип дома', 'Этаж', 'Ремонт', 'Мебель', 'Расценки на аренду']
     missing_columns = [col for col in required_columns if col not in data.columns]
     if missing_columns:
         raise ValueError(f"В данных отсутствуют следующие столбцы: {missing_columns}")
@@ -34,8 +34,8 @@ def preprocess_and_sort_data():
         ])
 
     # Разделение данных на признаки (X) и целевую переменную (y)
-    X = data.drop('Цена покупки', axis=1)
-    y = data['Цена покупки']
+    X = data.drop('Расценки на аренду', axis=1)
+    y = data['Расценки на аренду']
 
     # Разделение данных на обучающую и тестовую выборки (95% - обучение, 5% - тест)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05, random_state=42)

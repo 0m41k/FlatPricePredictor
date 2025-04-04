@@ -101,9 +101,9 @@ class PricePredictionApp(QMainWindow):
             prediction = self.model.predict(input_data)[0]
 
             # Форматируем предсказанную цену
-            formatted_prediction = f"{prediction:,.2f}"
+            formatted_prediction = f"{prediction:,.0f}"
 
             # Выводим результат в диалоговом окне
-            QMessageBox.information(self, "Результат", f"Предсказанная цена покупки: {formatted_prediction} рублей")
+            QMessageBox.information(self, "Результат", f"Расценка на аренду: {formatted_prediction} рублей")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка: {str(e)}")
